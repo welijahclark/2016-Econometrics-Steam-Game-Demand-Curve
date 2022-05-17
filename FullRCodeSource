@@ -1,0 +1,618 @@
+> #Script: Econometrics Paper: Steam Games Data
+> #Author: William Elijah Clark
+> #Date: 11/28/2016-12/01/2015
+> rm(list =ls())
+> mydata = read.csv("C:/Users/Elklark/Desktop/Econometrics/Project/Steam_Data_Collection_For_R_Project_v2.csv")
+> pfull <- (mydata$pfull)
+> pdisc <- (mydata$pdisc)
+> ownbe <- (mydata$ownbe)
+> ownaf <- (mydata$ownaf)
+> ownbe1 <-log(ownbe, base = exp(1))
+> ownaf1 <-log(ownaf, base = exp(1))
+> month <- (mydata$month)
+> genre <- (mydata$genre)
+> deltp <- pfull-pdisc
+> deltq <- ownbe-ownaf
+> elast <- deltq/deltp
+> mean(elast, na.rm=TRUE)
+[1] -Inf
+> arce1 <- deltq/deltq/107
+> arce2 <-deltp/107/deltp
+> aelas <- arce1*arce2
+> mean(aelas, na.rm=TRUE)
+
+[1] 8.734387e-05
+
+> mean(ownaf1)
+[1] 15.07137
+
+> #Genre Classifications: Acad = Action-Adventure, Shoot = Shooter, Strat = Strategy, Rpg = RPG, Misc = Miscellaneous
+> levels(genre)
+> View(mydata)
+> #Price Means
+> mean(pfull[genre=="Acad"])
+[1] 18.56143
+> mean(pdisc[genre=="Acad"], na.rm = TRUE)
+[1] 7.29
+> mean(pfull[genre=="Shoot"])
+[1] 17.26027
+> mean(pdisc[genre=="Shoot"], na.rm = TRUE)
+[1] 4.984722
+> mean(pfull[genre=="Strat"])
+[1] 22.68231
+> mean(pdisc[genre=="Strat"], na.rm = TRUE)
+[1] 5.49
+> mean(pfull[genre=="Rpg"])
+[1] 22.65667
+> mean(pdisc[genre=="Rpg"], na.rm = TRUE)
+[1] 8.204286
+> mean(pfull[genre=="Misc"])
+[1] 17.96667
+> mean(pdisc[genre=="Misc"], na.rm = TRUE)
+[1] 6.259048
+> #Quantity Means
+> mean(ownbe[genre=="Acad"]
+[1] 3387642
+> mean(ownaf[genre=="Acad"])
+[1] 3464439
+> mean(ownbe[genre=="Shoot"])
+[1] 5630675
+> mean(ownaf[genre=="Shoot"])
+[1] 5742993
+> mean(ownbe[genre=="Strat"])
+[1] 2781374
+> mean(ownaf[genre=="Strat"])
+[1] 2873298
+> mean(ownbe[genre=="Rpg"])
+[1] 3438608
+> mean(ownaf[genre=="Rpg"])
+[1] 3538536
+> mean(ownbe[genre=="Misc"])
+[1] 3424960
+> mean(ownaf[genre=="Misc"])
+[1] 3584574
+
+
+> #b = before discounting, a = after discounting
+> demandb1 <- lm(pfull~ownbe1)
+> demanda1 <- lm(pdisc~ownaf1, na.action=na.exclude)
+> demandb2 <- lm(pfull~ownbe1+genre)
+> demanda2 <- lm(pdisc~ownaf1+genre, na.action=na.exclude)
+> demandb3 <- lm(pfull~ownbe1+genre+month)
+> demanda3 <- lm(pdisc~ownaf1+genre+month, na.action=na.exclude)
+> demandb4 <- lm(ownbe1~pfull+genre)
+> demanda4 <- lm(ownaf1~pdisc+genre, na.action=na.exclude)
+> demandb5 <- lm(ownbe1~pfull+genre+month)
+> demanda5 <- lm(ownaf1~pdisc+genre+month, na.action=na.exclude)
+
+
+#All Regression Summaries
+> summary(demanda1)
+
+Call:
+lm(formula = pdisc ~ ownaf1, na.action = na.exclude)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-6.0187 -3.0894 -1.6245  0.4411 30.2470 
+
+Coefficients:
+            Estimate Std. Error t value Pr(>|t|)  
+(Intercept)   26.764     15.895   1.684   0.0953 .
+ownaf1        -1.366      1.054  -1.296   0.1980  
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 5.766 on 102 degrees of freedom
+  (3 observations deleted due to missingness)
+Multiple R-squared:  0.01619,	Adjusted R-squared:  0.006549 
+F-statistic: 1.679 on 1 and 102 DF,  p-value: 0.198
+> summary(demanda2)
+
+Call:
+lm(formula = pdisc ~ ownaf1 + genre, na.action = na.exclude)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-6.8234 -3.3719 -1.3667  0.6294 29.0999 
+
+Coefficients:
+            Estimate Std. Error t value Pr(>|t|)
+(Intercept)  24.1003    17.1906   1.402    0.164
+ownaf1       -1.1185     1.1405  -0.981    0.329
+genreMisc    -1.1578     1.8109  -0.639    0.524
+genreRpg      0.8448     2.0158   0.419    0.676
+genreShoot   -1.9780     1.6465  -1.201    0.233
+genreStrat   -2.1021     2.0826  -1.009    0.315
+
+Residual standard error: 5.781 on 98 degrees of freedom
+  (3 observations deleted due to missingness)
+Multiple R-squared:  0.04987,	Adjusted R-squared:  0.001389 
+F-statistic: 1.029 on 5 and 98 DF,  p-value: 0.4051
+> summary(demanda3)
+
+Call:
+lm(formula = pdisc ~ ownaf1 + genre + month, na.action = na.exclude)
+
+Residuals:
+   Min     1Q Median     3Q    Max 
+-6.212 -3.195 -0.784  1.564 25.772 
+
+Coefficients:
+            Estimate Std. Error t value Pr(>|t|)    
+(Intercept)  3.25957   15.53166   0.210    0.834    
+ownaf1       0.53790    1.04360   0.515    0.607    
+genreMisc   -1.77788    1.59122  -1.117    0.267    
+genreRpg     1.88944    1.77693   1.063    0.290    
+genreShoot   0.41961    1.50689   0.278    0.781    
+genreStrat  -0.64467    1.84429  -0.350    0.727    
+month       -0.06812    0.01232  -5.529 2.72e-07 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 5.067 on 97 degrees of freedom
+  (3 observations deleted due to missingness)
+Multiple R-squared:  0.2775,	Adjusted R-squared:  0.2328 
+F-statistic:  6.21 on 6 and 97 DF,  p-value: 1.52e-05
+
+> summary(demandb1)
+
+Call:
+lm(formula = pfull ~ ownbe1)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-13.822  -6.745  -1.412   2.903  42.544 
+
+Coefficients:
+            Estimate Std. Error t value Pr(>|t|)    
+(Intercept)  101.279     27.140   3.732 0.000309 ***
+ownbe1        -5.466      1.803  -3.031 0.003068 ** 
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 10.39 on 105 degrees of freedom
+Multiple R-squared:  0.08046,	Adjusted R-squared:  0.0717 
+F-statistic: 9.188 on 1 and 105 DF,  p-value: 0.003068
+> summary(demandb2)
+
+Call:
+lm(formula = pfull ~ ownbe1 + genre)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-13.862  -6.348  -2.274   4.108  43.264 
+
+Coefficients:
+            Estimate Std. Error t value Pr(>|t|)   
+(Intercept)  96.6250    29.8297   3.239  0.00162 **
+ownbe1       -5.2092     1.9847  -2.625  0.01002 * 
+genreMisc    -1.2120     3.2377  -0.374  0.70894   
+genreRpg      3.7148     3.5403   1.049  0.29655   
+genreShoot    0.5123     2.9411   0.174  0.86207   
+genreStrat    2.7685     3.7285   0.743  0.45949   
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 10.46 on 101 degrees of freedom
+Multiple R-squared:  0.1029,	Adjusted R-squared:  0.05854 
+F-statistic: 2.318 on 5 and 101 DF,  p-value: 0.04881
+> summary(demandb3)
+
+Call:
+lm(formula = pfull ~ ownbe1 + genre + month)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-16.706  -5.158  -1.260   3.757  37.648 
+
+Coefficients:
+            Estimate Std. Error t value Pr(>|t|)    
+(Intercept) 57.64568   27.14481   2.124   0.0362 *  
+ownbe1      -2.14900    1.82969  -1.175   0.2430    
+genreMisc   -1.96490    2.84899  -0.690   0.4920    
+genreRpg     6.59800    3.15490   2.091   0.0390 *  
+genreShoot   5.02505    2.71020   1.854   0.0667 .  
+genreStrat   5.67584    3.31879   1.710   0.0903 .  
+month       -0.12096    0.02182  -5.544 2.41e-07 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 9.197 on 100 degrees of freedom
+Multiple R-squared:  0.3139,	Adjusted R-squared:  0.2727 
+F-statistic: 7.624 on 6 and 100 DF,  p-value: 9.42e-07
+
+> summary(demandb4)
+
+Call:
+lm(formula = ownbe1 ~ pfull + genre)
+
+Residuals:
+     Min       1Q   Median       3Q      Max 
+-0.99665 -0.32717 -0.07218  0.21389  1.55734 
+
+Coefficients:
+            Estimate Std. Error t value Pr(>|t|)    
+(Intercept) 15.21313    0.14065 108.164   <2e-16 ***
+pfull       -0.01226    0.00467  -2.625   0.0100 *  
+genreMisc   -0.12578    0.15666  -0.803   0.4239    
+genreRpg    -0.02283    0.17265  -0.132   0.8951    
+genreShoot   0.33217    0.13881   2.393   0.0186 *  
+genreStrat  -0.20911    0.18016  -1.161   0.2485    
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 0.5076 on 101 degrees of freedom
+Multiple R-squared:  0.2163,	Adjusted R-squared:  0.1775 
+F-statistic: 5.576 on 5 and 101 DF,  p-value: 0.000141
+
+> summary(demandb5)
+
+Call:
+lm(formula = ownbe1 ~ pfull + genre + month)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-0.9510 -0.3116 -0.0840  0.1814  1.7151 
+
+Coefficients:
+             Estimate Std. Error t value Pr(>|t|)    
+(Intercept) 14.944886   0.188308  79.364   <2e-16 ***
+pfull       -0.006332   0.005391  -1.175   0.2430    
+genreMisc   -0.096596   0.154712  -0.624   0.5338    
+genreRpg    -0.108279   0.174621  -0.620   0.5366    
+genreShoot   0.211573   0.148116   1.428   0.1563    
+genreStrat  -0.282126   0.180572  -1.562   0.1214    
+month        0.002782   0.001325   2.100   0.0383 *  
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 0.4992 on 100 degrees of freedom
+Multiple R-squared:  0.2494,	Adjusted R-squared:  0.2044 
+F-statistic: 5.538 on 6 and 100 DF,  p-value: 5.469e-05
+
+> summary(demanda4)
+
+Call:
+lm(formula = ownaf1 ~ pdisc + genre, na.action = na.exclude)
+
+Residuals:
+     Min       1Q   Median       3Q      Max 
+-0.95497 -0.32385 -0.08682  0.21732  1.64579 
+
+Coefficients:
+             Estimate Std. Error t value Pr(>|t|)    
+(Intercept) 15.092967   0.130971 115.239   <2e-16 ***
+pdisc       -0.008688   0.008860  -0.981   0.3292    
+genreMisc   -0.122333   0.159465  -0.767   0.4448    
+genreRpg    -0.054226   0.177744  -0.305   0.7610    
+genreShoot   0.272592   0.143566   1.899   0.0605 .  
+genreStrat  -0.285721   0.182231  -1.568   0.1201    
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 0.5095 on 98 degrees of freedom
+  (3 observations deleted due to missingness)
+Multiple R-squared:  0.1494,	Adjusted R-squared:  0.106 
+F-statistic: 3.442 on 5 and 98 DF,  p-value: 0.006588
+
+> summary(demanda5)
+
+Call:
+lm(formula = ownaf1 ~ pdisc + genre + month, na.action = na.exclude)
+
+Residuals:
+     Min       1Q   Median       3Q      Max 
+-0.87653 -0.33491 -0.08813  0.18724  1.80020 
+
+Coefficients:
+             Estimate Std. Error t value Pr(>|t|)    
+(Intercept) 14.770861   0.170379  86.694  < 2e-16 ***
+pdisc        0.005078   0.009852   0.515  0.60742    
+genreMisc   -0.063949   0.155460  -0.411  0.68172    
+genreRpg    -0.118322   0.173234  -0.683  0.49622    
+genreShoot   0.146671   0.145710   1.007  0.31663    
+genreStrat  -0.316189   0.176406  -1.792  0.07619 .  
+month        0.003726   0.001320   2.823  0.00577 ** 
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 0.4923 on 97 degrees of freedom
+  (3 observations deleted due to missingness)
+Multiple R-squared:  0.214,	Adjusted R-squared:  0.1653 
+F-statistic: 4.401 on 6 and 97 DF,  p-value: 0.0005633
+
+> #Plotting and Graphs
+> plot(pdisc ~ ownaf1, xlab = "quantity", ylab = "price")
+> abline(demanda1)
+> title(main="demand curve a1", col.main="black", font.main=1)
+> plot(pfull ~ ownbe1, xlab = "quantity", ylab = "price")
+> abline(demandb1)
+> title(main="demand curve b1", col.main="black", font.main=1)
+
+> #Diagnostics
+> library(car)
+> crPlots(demandb1)
+> title(main="demand curve b1 Diagnostic", col.main="black", font.main=1)
+> crPlots(demanda1)
+> title(main="demand curve a1 Diagnostic", col.main="black", font.main=1)
+> crPlots(demandb2)
+> title(main="demand curve b2 Diagnostic", col.main="black", font.main=1)
+> crPlots(demanda2)
+> title(main="demand curve a2 Diagnostic", col.main="black", font.main=1)
+> crPlots(demandb3)
+> title(main="demand curve b3 Diagnostic", col.main="black", font.main=1)
+> crPlots(demandb4)
+> title(main="demand curve b4 Diagnostic", col.main="black", font.main=1)
+> crPlots(demanda4)
+> title(main="demand curve a4 Diagnostic", col.main="black", font.main=1)
+> crPlots(demandb5)
+> title(main="demand curve b5 Diagnostic", col.main="black", font.main=1)
+> crPlots(demanda5)
+> title(main="demand curve a5 Diagnostic", col.main="black", font.main=1)
+
+          
+> #Altered Demand Curves + Diagnostics
+> demandb3alt1 <- lm(pfull~sqrt(ownbe1)+genre+month)
+> summary(demandb3alt1)
+
+Call:
+lm(formula = pfull ~ sqrt(ownbe1) + genre + month)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-16.700  -5.192  -1.257   3.751  37.661 
+
+Coefficients:
+              Estimate Std. Error t value Pr(>|t|)    
+(Intercept)   90.83530   55.16698   1.647   0.1028    
+sqrt(ownbe1) -16.89473   14.33628  -1.178   0.2414    
+genreMisc     -1.97539    2.84933  -0.693   0.4897    
+genreRpg       6.58860    3.15538   2.088   0.0393 *  
+genreShoot     5.01862    2.70927   1.852   0.0669 .  
+genreStrat     5.66058    3.32061   1.705   0.0914 .  
+month         -0.12088    0.02183  -5.537 2.48e-07 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 9.197 on 100 degrees of freedom
+Multiple R-squared:  0.3139,	Adjusted R-squared:  0.2728 
+F-statistic: 7.626 on 6 and 100 DF,  p-value: 9.38e-07
+
+> crPlots(demandb3alt1)
+> title(main="demand curve b3alt1 Diagnostic", col.main="black", font.main=1)
+ 
+
+
+> demandb3alt2 <- lm(pfull~1/(ownbe1)+genre+month)
+> summary(demandb3alt2)
+
+Call:
+lm(formula = pfull ~ 1/(ownbe1) + genre + month)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-16.136  -5.402  -1.248   4.364  36.600 
+
+Coefficients:
+            Estimate Std. Error t value Pr(>|t|)    
+(Intercept) 25.88123    2.33410  11.088  < 2e-16 ***
+genreMisc   -1.78155    2.85005  -0.625   0.5333    
+genreRpg     6.92492    3.14849   2.199   0.0301 *  
+genreShoot   4.63342    2.69466   1.719   0.0886 .  
+genreStrat   6.36879    3.27205   1.946   0.0544 .  
+month       -0.12869    0.02084  -6.175 1.39e-08 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 9.214 on 101 degrees of freedom
+Multiple R-squared:  0.3044,	Adjusted R-squared:   0.27 
+F-statistic: 8.839 on 5 and 101 DF,  p-value: 5.501e-07
+
+> crPlots(demandb3alt1)
+> title(main="demand curve b3alt2 Diagnostic", col.main="black", font.main=1)
+
+> ownbe1alt <- 1/ownbe1
+> rm(demandb3alt2)
+Warning message:
+In rm(demandb3alt2) : object 'demandb3alt2' not found
+> demandb3alt2 <- lm(pfull~ownbe1alt+genre+month)
+> summary(demandb3alt2)
+
+Call:
+lm(formula = pfull ~ ownbe1alt + genre + month)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-16.684  -5.294  -1.226   3.731  37.700 
+
+Coefficients:
+             Estimate Std. Error t value Pr(>|t|)    
+(Intercept)  -8.72140   29.16884  -0.299   0.7656    
+ownbe1alt   511.48549  429.78802   1.190   0.2368    
+genreMisc    -2.00735    2.85052  -0.704   0.4829    
+genreRpg      6.56026    3.15693   2.078   0.0403 *  
+genreShoot    4.99845    2.70655   1.847   0.0677 .  
+genreStrat    5.61492    3.32621   1.688   0.0945 .  
+month        -0.12066    0.02187  -5.518  2.7e-07 ***
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 9.195 on 100 degrees of freedom
+Multiple R-squared:  0.3141,	Adjusted R-squared:  0.2729 
+F-statistic: 7.632 on 6 and 100 DF,  p-value: 9.264e-07
+
+> demandd <- lm(pfull~ownbe1+ownaf1+pdisc+genre+month)
+> summary(demandd)
+
+Call:
+lm(formula = pfull ~ ownbe1 + ownaf1 + pdisc + genre + month)
+
+Residuals:
+     Min       1Q   Median       3Q      Max 
+-13.3697  -3.0900  -0.3357   3.3632  20.0393 
+
+Coefficients:
+             Estimate Std. Error t value Pr(>|t|)    
+(Intercept)  62.98506   18.07516   3.485 0.000747 ***
+ownbe1       14.47190   14.74919   0.981 0.328987    
+ownaf1      -17.97165   14.84262  -1.211 0.228970    
+pdisc         1.42228    0.12012  11.841  < 2e-16 ***
+genreMisc     0.33679    1.90312   0.177 0.859909    
+genreRpg      3.91395    2.08730   1.875 0.063846 .  
+genreShoot    3.91240    1.75267   2.232 0.027948 *  
+genreStrat    6.12459    2.15273   2.845 0.005439 ** 
+month        -0.02818    0.01642  -1.716 0.089394 .  
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 5.889 on 95 degrees of freedom
+  (3 observations deleted due to missingness)
+Multiple R-squared:  0.7305,	Adjusted R-squared:  0.7078 
+F-statistic: 32.19 on 8 and 95 DF,  p-value: < 2.2e-16
+
+> crPlots(demandd)
+> title(main="demand curve d Diagnostic", col.main="black", font.main=1)
+> demande <- lm(ownaf1~pfull+pdisc+ownbe1+genre+month)
+> summary(demande)
+
+Call:
+lm(formula = ownaf1 ~ pfull + pdisc + ownbe1 + genre + month)
+
+Residuals:
+      Min        1Q    Median        3Q       Max 
+-0.055758 -0.016497 -0.007878  0.006997  0.305893 
+
+Coefficients:
+              Estimate Std. Error t value Pr(>|t|)    
+(Intercept)  2.069e-01  1.300e-01   1.592   0.1147    
+pfull       -8.456e-04  6.984e-04  -1.211   0.2290    
+pdisc        2.720e-03  1.266e-03   2.148   0.0343 *  
+ownbe1       9.876e-01  8.599e-03 114.850   <2e-16 ***
+genreMisc    2.613e-02  1.278e-02   2.045   0.0436 *  
+genreRpg     1.611e-02  1.449e-02   1.112   0.2689    
+genreShoot   7.402e-03  1.231e-02   0.601   0.5491    
+genreStrat   1.531e-02  1.530e-02   1.000   0.3197    
+month       -1.612e-05  1.144e-04  -0.141   0.8882    
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 0.0404 on 95 degrees of freedom
+  (3 observations deleted due to missingness)
+Multiple R-squared:  0.9948,	Adjusted R-squared:  0.9944 
+F-statistic:  2279 on 8 and 95 DF,  p-value: < 2.2e-16
+
+> crPlots(demande)
+> title(main="demand curve e Diagnostic", col.main="black", font.main=1)
+> install.packages("ggplot2")
+> demande.stdres = rstandard(demande)
+> qqnorm(demande.stdres,  ylab="standardized residuals",  xlab="normal scores",  main="NormalQQ plot for demande")
+
+vif(demande)
+           GVIF Df GVIF^(1/(2*Df))
+pfull  3.654226  1        1.911603
+pdisc  3.386242  1        1.840174
+ownbe1 1.389795  1        1.178896
+genre  1.635442  4        1.063419
+month  1.849916  1        1.360116
+> sqrt(vif(demande))
+           GVIF Df GVIF^(1/(2*Df))
+pfull  1.911603  1        1.382607
+pdisc  1.840174  1        1.356530
+ownbe1 1.178896  1        1.085770
+genre  1.278844  2        1.031222
+month  1.360116  1        1.166240
+
+> #...amazingly, there's no multicolliniarity implied here at all, as per 
+http://minato.sip21c.org/msb/man/VIF.html
+>#...well, actually, there might be some in pfull and pdisc, but it's not 
+that terrible.
+
+> durbinWatsonTest(demande)
+ lag Autocorrelation D-W Statistic p-value
+   1      0.02923532      1.912688   0.498
+ 
+
+Alternative hypothesis: rho != 0
+
+
+> derp <-lm(ownbe1~pfull)
+> summary(derp)
+
+Call:
+lm(formula = ownbe1 ~ pfull)
+
+Residuals:
+    Min      1Q  Median      3Q     Max 
+-0.7253 -0.4191 -0.1649  0.2428  1.8179 
+
+Coefficients:
+             Estimate Std. Error t value Pr(>|t|)    
+(Intercept) 15.321687   0.106278 144.166  < 2e-16 ***
+pfull       -0.014721   0.004857  -3.031  0.00307 ** 
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 0.5392 on 105 degrees of freedom
+Multiple R-squared:  0.08046,	Adjusted R-squared:  0.0717 
+F-statistic: 9.188 on 1 and 105 DF,  p-value: 0.003068
+
+> #The last test statistic is being used for the paper.
+> plot(ownbe1 ~ pdisc, xlab = "quantity", ylab = "price")
+> plot(ownbe1 ~ pdisc, xlab = "price", ylab = "quantity")
+> abline(derp)
+> title(main="Univariate Demand Regression", col.main="black", font.main=1)
+> crPlots(derp)
+> plot(ownbe1 ~ pdisc, xlab = "quantity", ylab = "price")
+> plot(ownbe1 ~ pdisc, xlab = "price", ylab = "quantity")
+> abline(derp)
+> title(main="figure1", col.main="black", font.main=1)
+#Testing for Non-Normality of Residuals
+> library(MASS)
+> qqPlot(demande, main="QQ Plot")
+> sresit <-stures(demande)
+Error: could not find function "stures"
+> sresit <-studres(demande)
+> hist(sresid, freq=FALSE,
++      main="Distribution of Studentized Residuals")
+Error in hist(sresid, freq = FALSE, main = "Distribution of Studentized Residuals") : 
+  object 'sresid' not found
+> hist(sresit, freq=FALSE,
++      main="Distribution of Studentized Residuals")
+> xfit<-seq(min(sresid),max(sresid),length=40) 
+Error in seq(min(sresid), max(sresid), length = 40) : 
+  object 'sresid' not found
+> xfit<-seq(min(sresit),max(sresit),length=40) 
+> yfit<-dnorm(xfit)
+> lines(xfit, yfit) 
+> a <- 0.02069
+> mean(pfull)
+[1] 19.06953
+> mean(ownbe)
+[1] 4104080
+> mean(ownbe1)
+[1] 15.04096
+> mean(ownaf1)
+[1] 15.07137
+> mean(pdisc)
+[1] NA
+> mean(pdisc, na.rm=TRUE)
+[1] 6.181923
+> 19.06953*15.04096
+[1] 286.824
+> 19.06953/15.04096
+[1] 1.26784
+> a*1.26784
+[1] 0.02623161
+> 6.181923/15.07137
+[1] 0.4101766
+> a*0.4101766
+[1] 0.008486554
+> exp(0.02623161)
+[1] 1.026579
+> exp(0.008486554)
+[1] 1.008523
+#Histograms
+> hist(pfull)
+>hist(ownbe)
+>hist(ownbe1)
