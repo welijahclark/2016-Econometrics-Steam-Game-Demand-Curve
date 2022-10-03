@@ -523,10 +523,8 @@ ownbe1 1.178896  1        1.085770
 genre  1.278844  2        1.031222
 month  1.360116  1        1.166240
 
-> #...amazingly, there's no multicolliniarity implied here at all, as per 
+> #There's no multicolliniarity implied here at all, as per 
 http://minato.sip21c.org/msb/man/VIF.html
->#...well, actually, there might be some in pfull and pdisc, but it's not 
-that terrible.
 
 > durbinWatsonTest(demande)
  lag Autocorrelation D-W Statistic p-value
